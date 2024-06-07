@@ -1,0 +1,23 @@
+#!/bin/bash
+
+set -e
+
+CMD="docker-compose -f environment/docker-compose.yml"
+
+# See: https://stackoverflow.com/questions/59895
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do
+  DIR="$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
+done
+DIR="$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )"
+
+$CMD build
+$CMD $@ up -d
+
+[ -e "$DIR/.terraform" ] || $DIR/terraform init
+
+$DIR/terraform apply -auto-approve
+
+echo "\nSQS Test 🎉🎉🎉"

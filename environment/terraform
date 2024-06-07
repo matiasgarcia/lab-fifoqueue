@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# See: https://stackoverflow.com/questions/59895
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do
+  DIR="$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
+done
+DIR="$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )"
+
+which docker > /dev/null || {
+  echo "I require docker but it's not installed." >&2
+  exit 1
+}
+
+docker run --rm -v $DIR:/tmp -w /tmp --network=fifoqueue_network hashicorp/terraform:1.0.0 $@

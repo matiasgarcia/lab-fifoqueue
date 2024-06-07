@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  localstack:
+    container_name: fifoqueue_localstack
+    image: localstack/localstack:3.0.2
+    restart: always
+    environment:
+      SERVICES: sqs, secretsmanager
+    ports:
+      - 4599:4566
+    networks:
+      - fifoqueue_network
+
+networks:
+  fifoqueue_network:
+    name: fifoqueue_network
