@@ -5,15 +5,19 @@ export async function sleep(delayMs) {
   return await new Promise((resolve) => setTimeout(resolve, delayMs));
 }
 
+// Generates a random number between 100 and 500
+function rand() {
+  return Math.floor(Math.random() * (500 - 100 + 1)) + 100;
+}
+
 const app = Consumer.create({
   queueUrl: "http://localhost:4599/000000000000/fifo-queue.fifo",
-  batchSize: 1,
+  batchSize: 10,
   waitTimeSeconds: 0,
   visibilityTimeout: 20,
   handleMessage: async (message) => {
-    console.log('Received message:', message.Body);
-    await sleep(10000);
-    console.log('Done consuming message:', message.Body)
+    await sleep(rand()); // simulate different workload
+    console.log('Done consuming message:', message.Body, new Date().toISOString())
   },
   sqs: new SQSClient({
     region: 'us-east-1',
