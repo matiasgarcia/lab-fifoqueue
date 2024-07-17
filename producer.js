@@ -8,24 +8,30 @@ AWS.config.update({
   endpoint: 'http://localhost:4599'
 });
 
+async function sleep(delayMs) {
+  return await new Promise((resolve) => setTimeout(resolve, delayMs));
+}
+
 const sqs = new AWS.SQS();
 const queueUrl = 'http://localhost:4599/000000000000/fifo-queue.fifo';
 
-[1].forEach(groupId => {
-  [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].forEach(messageNumber => {
-    const message = {
-      MessageBody: `Message ${messageNumber} Group ${groupId}`,
-      QueueUrl: queueUrl,
-      MessageGroupId: `group${groupId}`,
-      MessageDeduplicationId: `NEW920group${groupId}msg${messageNumber}`
-    };
+const time = new Date().toISOString();
 
-    sqs.sendMessage(message, (err, data) => {
-      if (err) {
-        console.error(`Error sending message: "${message.MessageBody}"`, err);
-      } else {
-        console.log(`Message sent: "${message.MessageBody}"`);
-      }
-    });    
-  })
-})
+async function run() {
+  for (const groupId of [1]) {
+    for(const messageNumber of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) {
+      const message = {
+        MessageBody: `[${time}][G - ${groupId}] Message ${messageNumber}`,
+        QueueUrl: queueUrl,
+        MessageGroupId: `group_${groupId}`,
+        MessageDeduplicationId: `${time}_${groupId}_${messageNumber}`
+      };
+
+      await sleep(100);
+      await sqs.sendMessage(message).promise();
+      console.log(`Message sent: "${message.MessageBody}"`);
+    }
+  }
+}
+
+run().then(console.log('done'))
