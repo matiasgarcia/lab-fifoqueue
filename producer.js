@@ -18,7 +18,7 @@ const queueUrl = 'http://localhost:4599/000000000000/fifo-queue.fifo';
 const time = new Date().toISOString();
 
 async function run() {
-  for (const groupId of [1]) {
+  for (const groupId of [1, 2, 3]) {
     for(const messageNumber of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) {
       const message = {
         MessageBody: `[${time}][G - ${groupId}] Message ${messageNumber}`,
