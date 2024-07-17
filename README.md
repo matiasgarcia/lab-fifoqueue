@@ -72,6 +72,10 @@ Why this happens?
 
 Hence, you need `heartbeatInterval` in sqs-consumer. This basically tells sqs that we are still processing the message and it doesn't have to forward it to another consumer yet.
 
+
+[sequential processing per message group](https://drive.google.com/file/d/1Ew_ZHKOnrsbZMlBGHhWcx81vnpzBSkV-/view?usp=sharing)
+[parallel and disordered message processing per message group](https://drive.google.com/file/d/15AdpmFAoqY3V3Cqx5f-Kqmdf8dKcymFB/view?usp=sharing)
+
 ## Utils
 
 ```
