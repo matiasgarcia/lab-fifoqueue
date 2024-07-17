@@ -7,7 +7,7 @@ This is a lab to test sqs consumers and producers on a fifo queue.
 Instructions:
 1. npm run init
 2. npm run produce
-3. npm run consume (run this as much consumers you want to run at the same time)
+3. npm run consume-parallel OR npm run consume-sequential (run this as much message groups you want to process at the same)
 
 ## Conclusion
 

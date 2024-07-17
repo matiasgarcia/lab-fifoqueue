@@ -5,7 +5,7 @@
   "main": "pushMessages.js",
   "scripts": {
     "produce": "node producer.js",
-    "consume": "node consumer.mjs",
+    "consume-parallel": "node consumer.mjs",
     "consume-sequential": "node sequential-consumer.mjs",
     "init": "environment/init"
   },
