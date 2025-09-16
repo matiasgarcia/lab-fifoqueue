@@ -2,7 +2,7 @@
 
 set -e
 
-CMD="docker-compose -f environment/docker-compose.yml"
+CMD="docker compose -f environment/docker-compose.yml"
 
 # See: https://stackoverflow.com/questions/59895
 SOURCE="${BASH_SOURCE[0]}"

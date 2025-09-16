@@ -18,19 +18,35 @@ const queueUrl = 'http://localhost:4599/000000000000/fifo-queue.fifo';
 const time = new Date().toISOString();
 
 async function run() {
-  for (const groupId of [1, 2, 3]) {
-    for(const messageNumber of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) {
-      const message = {
-        MessageBody: `[${time}][G - ${groupId}] Message ${messageNumber}`,
-        QueueUrl: queueUrl,
-        MessageGroupId: `group_${groupId}`,
-        MessageDeduplicationId: `${time}_${groupId}_${messageNumber}`
-      };
-
-      await sleep(100);
-      await sqs.sendMessage(message).promise();
-      console.log(`Message sent: "${message.MessageBody}"`);
-    }
+  // Track the next message number for each group
+  const groupCounters = { 1: 1, 2: 1, 3: 1 };
+  const maxMessages = 3;
+  const groups = [1, 2, 3];
+  
+  // Continue until all groups have sent all their messages
+  while (Object.values(groupCounters).some(counter => counter <= maxMessages)) {
+    // Filter groups that still have messages to send
+    const availableGroups = groups.filter(groupId => groupCounters[groupId] <= maxMessages);
+    
+    if (availableGroups.length === 0) break;
+    
+    // Randomly select a group from available groups
+    const randomGroupId = availableGroups[Math.floor(Math.random() * availableGroups.length)];
+    const messageNumber = groupCounters[randomGroupId];
+    
+    await sleep(100);
+    await sqs.sendMessage({
+      MessageBody: JSON.stringify({
+        payload: `[${time}][G - ${randomGroupId}] Message ${messageNumber}`,
+        groupId: randomGroupId,
+      }),
+      QueueUrl: queueUrl,
+      MessageGroupId: `group_${randomGroupId}`,
+      MessageDeduplicationId: `${time}_${randomGroupId}_${messageNumber}`
+    }).promise();
+    
+    // Increment the counter for this group
+    groupCounters[randomGroupId]++;
   }
 }
 

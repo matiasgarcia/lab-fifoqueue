@@ -29,11 +29,12 @@ const app = Consumer.create({
   visibilityTimeout: 5,
   heartbeatInterval: 2,
   handleMessageBatch: async (messages) => {
+    console.log('pulled batch', messages.map(m => JSON.parse(m.Body).groupId));
     const messagesToAcknowledge = [];
     try {
       for (const message of messages) {
-        await sleep(1000 + rand()); // simulate different workload
-        console.log('Done consuming message:', message.Body, new Date().toISOString())
+        await sleep(100 + rand()); // simulate different workload
+        // console.log('Done consuming message:', message.Body, new Date().toISOString())
         messagesToAcknowledge.push(message);
       }
       return messagesToAcknowledge;
